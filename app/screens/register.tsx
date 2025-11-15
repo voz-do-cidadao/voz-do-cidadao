@@ -2,7 +2,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import { Alert, Image, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity } from 'react-native';
-import { EMAIL_USER_KEY } from '../../src/services/storage';
+import { EMAIL_USER_KEY, SHOW_TUTORIAL } from '../../src/services/storage';
 
 export default function RegisterScreen() {
     const router = useRouter();
@@ -24,6 +24,7 @@ export default function RegisterScreen() {
 
         try {
             await AsyncStorage.setItem(EMAIL_USER_KEY, email);
+            await AsyncStorage.setItem(SHOW_TUTORIAL, 'true');
         } catch (e) {
             Alert.alert("Erro", "Não foi possível salvar o email.");
         }

@@ -1,5 +1,30 @@
 import api from './api';
 
+export const uploadReportImages = async (reportId: string, imageUris: string[]) => {
+    const formData = new FormData();
+
+    imageUris.forEach((imageUri, index) => {
+        const file = {
+            uri: imageUri,
+            name: `report-image-${Date.now()}-${index}.jpg`,
+            type: 'image/jpeg',
+        } as any;
+        formData.append(`image${index}`, file);
+    });
+
+    try {
+        const response = await api.post(`/voz-do-povo/reportImage/${reportId}`, formData, {
+            headers: {
+                "Content-Type": "multipart/form-data",
+            },
+        });
+        return response.data;
+    } catch (error) {
+        console.log(error)
+        throw error;
+    }
+};
+
 export const uploadReportImage = async (reportId: string, imageUri: string) => {
     const formData = new FormData();
     const file = {

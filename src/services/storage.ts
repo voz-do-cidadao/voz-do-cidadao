@@ -1,1 +1,2 @@
-export const EMAIL_USER_KEY = 'EMAIL_USER'; 
+export const EMAIL_USER_KEY = 'EMAIL_USER';
+export const SHOW_TUTORIAL = 'SHOW_TUTORIAL'
