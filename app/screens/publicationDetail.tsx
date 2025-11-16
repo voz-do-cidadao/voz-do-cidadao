@@ -1,3 +1,4 @@
+import CustomAlertModal from 'components/CustomAlertModal';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, Button, Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
@@ -9,12 +10,22 @@ export default function PublicationDetailScreen() {
     const { reportId, from } = useLocalSearchParams<{ reportId: string, from?: string }>();
     const [publication, setPublication] = useState<ReportDetail | null>(null);
     const [isLoading, setIsLoading] = useState(true);
+    const [isModalVisible, setIsModalVisible] = useState(false);
+    const [modalMessage, setModalMessage] = useState('');
+
+    const showCustomAlert = (message: string) => {
+        setModalMessage(message);
+        setIsModalVisible(true);
+    };
 
     useEffect(() => {
         if (!reportId || typeof reportId !== 'string') {
             console.error("Nenhum ID de publicação foi fornecido.");
             setIsLoading(false);
             return;
+        }
+        if (from === 'imageAdd') {
+            showCustomAlert("Sua denúncia foi enviada com sucesso!");
         }
 
         const fetchPublication = async () => {
@@ -81,7 +92,7 @@ export default function PublicationDetailScreen() {
             <View style={styles.header}>
                 {from === 'imageAdd' ? (
                     <View style={styles.concludeButtonContainer}>
-                        <Button title="Concluir" color='#297E33' onPress={() => router.replace('/menu')} />
+                        <Button title="Concluir" color='#297E33' onPress={() => router.replace('/screens/myPublications')} />
                     </View>
                 ) : (
                     <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
@@ -119,6 +130,11 @@ export default function PublicationDetailScreen() {
                     </View>
                 </ScrollView>
             </View>
+            <CustomAlertModal
+                visible={isModalVisible}
+                onClose={() => setIsModalVisible(false)}
+                message={modalMessage}
+            />
         </View>
     );
 }

@@ -1,6 +1,7 @@
 import { Picker } from "@react-native-picker/picker";
+import CustomAlertModal from "components/CustomAlertModal";
 import React, { useEffect, useState } from "react";
-import { ActivityIndicator, Alert, Button, Modal, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
+import { ActivityIndicator, Button, Modal, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
 import { getAddressByCep } from "../../src/services/viaCepService";
 
 export default function AddressModal({ visible, onClose, onConfirm }) {
@@ -12,6 +13,14 @@ export default function AddressModal({ visible, onClose, onConfirm }) {
   const [number, setNumber] = useState("");
   const [zipCode, setZipCode] = useState("");
   const [isLoadingCep, setIsLoadingCep] = useState(false);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [modalMessage, setModalMessage] = useState('');
+
+  const showCustomAlert = (message: string) => {
+    setModalMessage(message);
+    setIsModalVisible(true);
+  };
+
 
   const handleNumberChange = (text: string) => {
     const cleaned = text.replace(/\D/g, '');
@@ -46,7 +55,7 @@ export default function AddressModal({ visible, onClose, onConfirm }) {
   const handleConfirm = () => {
 
     if (!zipCode || !state || !city || !neighborhood || !street || !number) {
-      Alert.alert("Campos obrigatórios", "Preencha todos os campos obrigatórios (*).");
+      showCustomAlert("Preencha todos os campos obrigatórios.");
       return;
     }
 
@@ -205,7 +214,12 @@ export default function AddressModal({ visible, onClose, onConfirm }) {
           </ScrollView>
         </View>
       </View>
-    </Modal>
+      <CustomAlertModal
+        visible={isModalVisible}
+        onClose={() => setIsModalVisible(false)}
+        message={modalMessage}
+      />
+    </Modal >
   );
 }
 
@@ -252,7 +266,7 @@ const styles = StyleSheet.create({
   },
   picker: {
     height: 50,
-    color: '#AAAAAA',
+    color: '#333',
   },
   buttonRow: {
     flexDirection: "row",

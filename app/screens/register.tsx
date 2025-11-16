@@ -1,24 +1,39 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import CustomAlertModal from 'components/CustomAlertModal';
 import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
-import { Alert, Image, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity } from 'react-native';
+import { Image, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity } from 'react-native';
 import { EMAIL_USER_KEY, SHOW_TUTORIAL } from '../../src/services/storage';
 
+
 export default function RegisterScreen() {
+    const [isModalVisible, setIsModalVisible] = useState(false);
+    const [modalMessage, setModalMessage] = useState('');
+
     const router = useRouter();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
 
+    const showCustomAlert = (message: string) => {
+        setModalMessage(message);
+        setIsModalVisible(true);
+    };
+
     const handleRegister = async () => {
+        if (!email.trim() || !password.trim() || !confirmPassword.trim()) {
+            showCustomAlert("Por favor, preencha todos os campos.");
+            return;
+        }
+
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailRegex.test(email)) {
-            Alert.alert("Email Inválido", "Por favor, insira um endereço de email válido.");
+            showCustomAlert("Por favor, insira um endereço de email válido.");
             return;
         }
 
         if (password !== confirmPassword) {
-            Alert.alert("Senhas não coincidem", "As senhas inseridas não são iguais.");
+            showCustomAlert("As senhas inseridas não são iguais.");
             return;
         }
 
@@ -26,7 +41,7 @@ export default function RegisterScreen() {
             await AsyncStorage.setItem(EMAIL_USER_KEY, email);
             await AsyncStorage.setItem(SHOW_TUTORIAL, 'true');
         } catch (e) {
-            Alert.alert("Erro", "Não foi possível salvar o email.");
+            console.error("Não foi possível salvar o email.");
         }
         router.replace('/menu');
     };
@@ -78,6 +93,11 @@ export default function RegisterScreen() {
             <TouchableOpacity onPress={() => router.back()}>
                 <Text style={styles.linkText}>Já possui conta? Faça o login</Text>
             </TouchableOpacity>
+            <CustomAlertModal
+                visible={isModalVisible}
+                onClose={() => setIsModalVisible(false)}
+                message={modalMessage}
+            />
         </ScrollView>
     );
 }

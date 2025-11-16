@@ -1,11 +1,12 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Picker } from '@react-native-picker/picker';
 import AddressModal from 'app/screens/address';
+import CustomAlertModal from 'components/CustomAlertModal';
 import { useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
-import { Alert, Button, Keyboard, ScrollView, StyleSheet, Switch, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { BackHandler, Button, Keyboard, ScrollView, StyleSheet, Switch, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { publishReport, PublishReportData } from '../../src/services/reportService';
-import { EMAIL_USER_KEY } from '../../src/services/storage';
+import { EMAIL_USER_KEY, SHOW_TUTORIAL } from '../../src/services/storage';
 
 export default function App() {
   const [title, setTitle] = useState('');
@@ -19,25 +20,62 @@ export default function App() {
   const router = useRouter();
   const [showAddressModal, setShowAddressModal] = useState(false);
   const [showCancelMessage, setShowCancelMessage] = useState(false);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [modalMessage, setModalMessage] = useState('');
+
+  const showCustomAlert = (message: string) => {
+    setModalMessage(message);
+    setIsModalVisible(true);
+  };
 
   useEffect(() => {
-    const loadEmail = async () => {
+    const loadDataAndShowTutorial = async () => {
       try {
         const savedEmail = await AsyncStorage.getItem(EMAIL_USER_KEY);
         if (savedEmail !== null) {
           setEmail(savedEmail);
         }
+
+        const showTutorialFlag = await AsyncStorage.getItem(SHOW_TUTORIAL);
+        if (showTutorialFlag === "true") {
+          showCustomAlert("Preencha os campos realizar sua denúncia. Forneça o máximo de detalhes que puder.");
+        }
       } catch (e) {
-        console.error("Falha ao recuperar email do storage", e);
+        console.error("Falha ao carregar dados iniciais ou tutorial", e);
       }
     };
 
-    loadEmail();
+    loadDataAndShowTutorial();
   }, []);
+
+  useEffect(() => {
+    const handleBackPress = () => {
+      if (showCancelMessage) {
+        setShowCancelMessage(false);
+        return true;
+      }
+
+      onCancelPress();
+      return true;
+    };
+
+    const backHandler = BackHandler.addEventListener('hardwareBackPress', handleBackPress);
+    return () => backHandler.remove();
+  }, [showCancelMessage]);
+
+  const limparCampos = () => {
+    setTitle('');
+    setTheme('');
+    setName('');
+    setAnonymous(false);
+    setComplaint('');
+    setAddress("");
+    setAddressDetails(null);
+  };
 
   const handlePublishAndNavigate = async () => {
     if (!title || !theme || !email || !complaint || !addressDetails || (!anonymous && !name)) {
-      Alert.alert("Campos obrigatórios", "Preencha todos os campos obrigatórios (*).");
+      showCustomAlert("Preencha todos os campos obrigatórios.");
       return;
     }
 
@@ -64,10 +102,9 @@ export default function App() {
 
     try {
       const responseData = await publishReport(body);
-      router.push({ pathname: '/screens/imageAdd', params: { reportId: responseData.id } });
+      limparCampos();
+      router.replace({ pathname: '/screens/imageAdd', params: { reportId: responseData.id } });
     } catch (error) {
-      const errorMessage = error.response?.data?.message || error.message || 'Erro desconhecido';
-      Alert.alert("Erro na Publicação", errorMessage);
       console.error("Erro ao publicar:", error);
     }
   };
@@ -212,6 +249,11 @@ export default function App() {
           </View>
         </View>
       )}
+      <CustomAlertModal
+        visible={isModalVisible}
+        onClose={() => setIsModalVisible(false)}
+        message={modalMessage}
+      />
     </>
   );
 }
