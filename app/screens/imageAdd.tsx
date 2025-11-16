@@ -1,16 +1,43 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import CustomAlertModal from 'components/CustomAlertModal';
 import * as ImagePicker from 'expo-image-picker';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, Alert, Button, Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { uploadReportImage } from '../../src/services/reportImageService';
+import { SHOW_TUTORIAL } from '../../src/services/storage';
 
 export default function App() {
   const router = useRouter();
   const [selectedImages, setSelectedImages] = useState<string[]>([]);
   const [isUploading, setIsUploading] = useState(false);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [modalMessage, setModalMessage] = useState('');
   const MAX_IMAGES = 3;
 
   const { reportId } = useLocalSearchParams();
+
+  const showCustomAlert = (message: string) => {
+    setModalMessage(message);
+    setIsModalVisible(true);
+  };
+
+
+  useEffect(() => {
+    const loadDataAndShowTutorial = async () => {
+      try {
+        const showTutorialFlag = await AsyncStorage.getItem(SHOW_TUTORIAL);
+        if (showTutorialFlag === "true") {
+          showCustomAlert("Adicione até 3 imagens para a sua denúncia!");
+        }
+      } catch (e) {
+        console.error("Falha ao carregar tutorial", e);
+      }
+    };
+
+    loadDataAndShowTutorial();
+  }, []);
+
 
   const handlePublish = async () => {
     if (!reportId || typeof reportId !== 'string') {
@@ -96,7 +123,13 @@ export default function App() {
           Adicionar imagem ({remaining})
         </Text>
       </TouchableOpacity>
+      <CustomAlertModal
+        visible={isModalVisible}
+        onClose={() => setIsModalVisible(false)}
+        message={modalMessage}
+      />
     </View>
+
   );
 }
 

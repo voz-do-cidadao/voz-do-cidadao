@@ -1,18 +1,33 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import CustomAlertModal from 'components/CustomAlertModal';
 import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
-import { Alert, Image, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity } from 'react-native';
+import { Image, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity } from 'react-native';
 import { EMAIL_USER_KEY, SHOW_TUTORIAL } from '../src/services/storage';
 
+
 export default function LoginScreen() {
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [modalMessage, setModalMessage] = useState('');
+
   const router = useRouter();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
+  const showCustomAlert = (message: string) => {
+    setModalMessage(message);
+    setIsModalVisible(true);
+  };
+
   const handleGoToMenu = async () => {
+    if (!email.trim() || !password.trim()) {
+      showCustomAlert("Por favor, insira o email e a senha.");
+      return;
+    }
+
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
-      Alert.alert("Email Inválido", "Por favor, insira um endereço de email válido.");
+      showCustomAlert("Por favor, insira um endereço de email válido.");
       return;
     }
 
@@ -20,7 +35,7 @@ export default function LoginScreen() {
       await AsyncStorage.setItem(EMAIL_USER_KEY, email);
       await AsyncStorage.setItem(SHOW_TUTORIAL, 'false');
     } catch (e) {
-      Alert.alert("Erro", "Não foi possível salvar o email.");
+      console.error("Erro", "Não foi possível salvar o email.");
     }
     router.replace('/menu');
   };
@@ -63,6 +78,11 @@ export default function LoginScreen() {
       <TouchableOpacity onPress={() => router.push('/screens/register')}>
         <Text style={styles.linkText}>Não possui conta ainda? Registre-se</Text>
       </TouchableOpacity>
+      <CustomAlertModal
+        visible={isModalVisible}
+        onClose={() => setIsModalVisible(false)}
+        message={modalMessage}
+      />
     </ScrollView >
   );
 }
