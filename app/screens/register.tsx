@@ -1,19 +1,59 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import CustomAlertModal from 'components/CustomAlertModal';
 import { useRouter } from 'expo-router';
-import React, { useState } from 'react';
-import { Image, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity } from 'react-native';
+import React, { useEffect, useRef, useState } from 'react';
+import {
+    Animated,
+    Image,
+    Keyboard,
+    KeyboardEvent,
+    Platform,
+    ScrollView,
+    StyleSheet,
+    Text,
+    TextInput,
+    TouchableOpacity,
+    View
+} from 'react-native';
 import { EMAIL_USER_KEY, SHOW_TUTORIAL } from '../../src/services/storage';
 
-
 export default function RegisterScreen() {
-    const [isModalVisible, setIsModalVisible] = useState(false);
-    const [modalMessage, setModalMessage] = useState('');
-
     const router = useRouter();
+
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
+
+    const [isModalVisible, setIsModalVisible] = useState(false);
+    const [modalMessage, setModalMessage] = useState('');
+    
+    const keyboardOffset = useRef(new Animated.Value(0)).current;
+
+    useEffect(() => {
+        const showEvent = Platform.OS === 'android' ? 'keyboardDidShow' : 'keyboardWillShow';
+        const hideEvent = Platform.OS === 'android' ? 'keyboardDidHide' : 'keyboardWillHide';
+
+        const showSub = Keyboard.addListener(showEvent, (event: KeyboardEvent) => {
+            Animated.timing(keyboardOffset, {
+                toValue: event.endCoordinates.height - 40,
+                duration: 250,
+                useNativeDriver: false,
+            }).start();
+        });
+
+        const hideSub = Keyboard.addListener(hideEvent, () => {
+            Animated.timing(keyboardOffset, {
+                toValue: 0,
+                duration: 250,
+                useNativeDriver: false,
+            }).start();
+        });
+
+        return () => {
+            showSub.remove();
+            hideSub.remove();
+        };
+    }, []);
 
     const showCustomAlert = (message: string) => {
         setModalMessage(message);
@@ -43,62 +83,68 @@ export default function RegisterScreen() {
         } catch (e) {
             console.error("Não foi possível salvar o email.");
         }
+
         router.replace('/menu');
     };
 
     return (
-        <ScrollView
-            style={styles.container}
-            contentContainerStyle={styles.scrollContentContainer}
-            keyboardShouldPersistTaps="handled"
-        >
-            <Image
-                source={require('../../assets/images/logo_b.png')}
-                style={styles.logo}
-                resizeMode="contain"
-            />
+        <View style={{ flex: 1, backgroundColor: "#174791" }}>
+            <ScrollView
+                style={styles.container}
+                contentContainerStyle={styles.scrollContentContainer}
+                keyboardShouldPersistTaps="handled"
+            >
+                <Image
+                    source={require('../../assets/images/logo_b.png')}
+                    style={styles.logo}
+                    resizeMode="contain"
+                />
 
-            <TextInput
-                style={styles.input}
-                placeholder="Email"
-                placeholderTextColor="#888"
-                value={email}
-                onChangeText={setEmail}
-                keyboardType="email-address"
-                autoCapitalize="none"
-            />
+                <Animated.View style={{ marginBottom: keyboardOffset, alignItems:"center", width: "100%" }}>
+                    <TextInput
+                        style={styles.input}
+                        placeholder="Email"
+                        placeholderTextColor="#888"
+                        value={email}
+                        onChangeText={setEmail}
+                        keyboardType="email-address"
+                        autoCapitalize="none"
+                    />
 
-            <TextInput
-                style={styles.input}
-                placeholder="Senha"
-                placeholderTextColor="#888"
-                value={password}
-                onChangeText={setPassword}
-                secureTextEntry
-            />
+                    <TextInput
+                        style={styles.input}
+                        placeholder="Senha"
+                        placeholderTextColor="#888"
+                        value={password}
+                        onChangeText={setPassword}
+                        secureTextEntry
+                    />
 
-            <TextInput
-                style={styles.input}
-                placeholder="Confirmação de senha"
-                placeholderTextColor="#888"
-                value={confirmPassword}
-                onChangeText={setConfirmPassword}
-                secureTextEntry
-            />
+                    <TextInput
+                        style={styles.input}
+                        placeholder="Confirmação de senha"
+                        placeholderTextColor="#888"
+                        value={confirmPassword}
+                        onChangeText={setConfirmPassword}
+                        secureTextEntry
+                    />
 
-            <TouchableOpacity style={styles.registerButton} onPress={handleRegister}>
-                <Text style={styles.registerButtonText}>Criar conta</Text>
-            </TouchableOpacity>
+                    <TouchableOpacity style={styles.registerButton} onPress={handleRegister}>
+                        <Text style={styles.registerButtonText}>Criar conta</Text>
+                    </TouchableOpacity>
 
-            <TouchableOpacity onPress={() => router.back()}>
-                <Text style={styles.linkText}>Já possui conta? Faça o login</Text>
-            </TouchableOpacity>
-            <CustomAlertModal
-                visible={isModalVisible}
-                onClose={() => setIsModalVisible(false)}
-                message={modalMessage}
-            />
-        </ScrollView>
+                    <TouchableOpacity onPress={() => router.back()}>
+                        <Text style={styles.linkText}>Já possui conta? Faça o login</Text>
+                    </TouchableOpacity>
+                </Animated.View>
+
+                <CustomAlertModal
+                    visible={isModalVisible}
+                    onClose={() => setIsModalVisible(false)}
+                    message={modalMessage}
+                />
+            </ScrollView>
+        </View>
     );
 }
 
@@ -147,5 +193,6 @@ const styles = StyleSheet.create({
         color: '#FFFFFF',
         fontSize: 14,
         marginTop: 15,
+        textAlign: 'center',
     },
 });
