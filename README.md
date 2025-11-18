@@ -1,4 +1,4 @@
-# Voz do Cidadâo
+# Voz do Cidadão
 
 Este é o aplicativo do projeto 'Voz do Cidadão', um canal para registro e visualização de denúncias, conectando o cidadão aos órgãos governamentais.
 
