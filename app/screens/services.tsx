@@ -20,43 +20,58 @@ export default function ManualDeUso() {
         </View>
 
         <View style={styles.sections}>
-          <Text style={styles.sectionTitle}>Saneamento básico</Text>
-          <Text style={styles.paragraph}>Problemas com água, esgoto, drenagem ou coleta de lixo.</Text>
+          <Text style={styles.sectionTitle}>Limpeza</Text>
+          <Text style={styles.paragraph}>Lixo acumulado em vias, descarte irregular de entulho ou calçadas sujas.</Text>
         </View>
 
         <View style={styles.sections}>
-          <Text style={styles.sectionTitle}>Infraestrutura viária</Text>
-          <Text style={styles.paragraph}>Buracos, asfalto danificado, calçadas quebradas ou sinalização ruim.</Text>
+          <Text style={styles.sectionTitle}>Meio ambiente</Text>
+          <Text style={styles.paragraph}>Poda irregular de árvores, poluição ou desmatamento e queimadas.</Text>
         </View>
 
         <View style={styles.sections}>
-          <Text style={styles.sectionTitle}>Educação</Text>
-          <Text style={styles.paragraph}>Escolas, creches, infraestrutura ou falta de vagas.</Text>
+          <Text style={styles.sectionTitle}>Transporte</Text>
+          <Text style={styles.paragraph}>Atraso ou superlotação em ônibus, problemas de itinerário ou má conservação de veículos.</Text>
         </View>
 
         <View style={styles.sections}>
-          <Text style={styles.sectionTitle}>Iluminação pública</Text>
-          <Text style={styles.paragraph}>Poste apagado, lâmpada queimada ou iluminação insuficiente em ruas.</Text>
+          <Text style={styles.sectionTitle}>Mobilidade</Text>
+          <Text style={styles.paragraph}>Calçadas quebradas, falta de rampas de acesso ou sinalização ruim para pedestres/ciclistas.</Text>
+        </View>
+
+        <View style={styles.sections}>
+          <Text style={styles.sectionTitle}>Serviços</Text>
+          <Text style={styles.paragraph}>Iluminação pública apagada, falhas em semáforos ou manutenção em geral.</Text>
+        </View>
+
+        <View style={styles.sections}>
+          <Text style={styles.sectionTitle}>Água</Text>
+          <Text style={styles.paragraph}>Vazamento na rede de distribuição, falta de abastecimento ou problemas de qualidade.</Text>
         </View>
 
         <View style={styles.sections}>
           <Text style={styles.sectionTitle}>Energia elétrica</Text>
-          <Text style={styles.paragraph}>Queda de energia, fios soltos ou problemas na rede elétrica.</Text>
+          <Text style={styles.paragraph}>Queda de energia, fios soltos ou risco em postes e na rede elétrica.</Text>
         </View>
 
         <View style={styles.sections}>
-          <Text style={styles.sectionTitle}>Segurança pública</Text>
+          <Text style={styles.sectionTitle}>Saneamento básico</Text>
+          <Text style={styles.paragraph}>Problemas com esgoto a céu aberto, drenagem ou coleta de lixo.</Text>
+        </View>
+
+        <View style={styles.sections}>
+          <Text style={styles.sectionTitle}>Pertubação do sossego</Text>
+          <Text style={styles.paragraph}>Barulho excessivo, som alto em horários inadequados ou eventos sem autorização.</Text>
+        </View>
+
+        <View style={styles.sections}>
+          <Text style={styles.sectionTitle}>Segurança</Text>
           <Text style={styles.paragraph}>Falta de policiamento, áreas perigosas ou necessidade de monitoramento.</Text>
         </View>
 
         <View style={styles.sections}>
-          <Text style={styles.sectionTitle}>Áreas verdes e lazer</Text>
-          <Text style={styles.paragraph}>Praças, parques, quadras, playground, areninhas ou espaços abandonados</Text>
-        </View>
-
-        <View style={styles.sections}>
-          <Text style={styles.sectionTitle}>Transporte público</Text>
-          <Text style={styles.paragraph}>Ônibus, metrôs, trens, pontos de parada e estações</Text>
+          <Text style={styles.sectionTitle}>Animais e Zoonoses</Text>
+          <Text style={styles.paragraph}>Animais de rua soltos, maus-tratos ou foco de doenças e pragas.</Text>
         </View>
       </ScrollView>
     </View>
