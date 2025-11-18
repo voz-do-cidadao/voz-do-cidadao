@@ -26,7 +26,7 @@ export default function RegisterScreen() {
 
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [modalMessage, setModalMessage] = useState('');
-    
+
     const keyboardOffset = useRef(new Animated.Value(0)).current;
 
     useEffect(() => {
@@ -100,7 +100,7 @@ export default function RegisterScreen() {
                     resizeMode="contain"
                 />
 
-                <Animated.View style={{ marginBottom: keyboardOffset, alignItems:"center", width: "100%" }}>
+                <Animated.View style={{ marginBottom: keyboardOffset, alignItems: "center", width: "100%" }}>
                     <TextInput
                         style={styles.input}
                         placeholder="Email"
@@ -173,6 +173,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: 15,
         fontSize: 16,
         marginBottom: 20,
+        color: '#000000',
     },
     registerButton: {
         width: 168,
