@@ -4,7 +4,7 @@ import AddressModal from 'app/screens/address';
 import CustomAlertModal from 'components/CustomAlertModal';
 import { useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
-import { BackHandler, Button, Keyboard, ScrollView, StyleSheet, Switch, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { BackHandler, Keyboard, ScrollView, StyleSheet, Switch, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { publishReport, PublishReportData } from '../../src/services/reportService';
 import { EMAIL_USER_KEY, SHOW_TUTORIAL } from '../../src/services/storage';
 
@@ -122,16 +122,17 @@ export default function App() {
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         <View style={styles.header}>
           <View style={styles.headerButtons}>
-            <Button title="Cancelar" color='#297E33' onPress={onCancelPress} />
+            <TouchableOpacity onPress={onCancelPress}>
+              <Text style={styles.cancelButtonHeaderText}>Cancelar</Text>
+            </TouchableOpacity>
             <View style={{ flex: 1 }} />
-
           </View>
         </View>
 
         <View style={styles.sectionContainer}>
-          <Text style={styles.title}>Nova publicação</Text>
+          <Text style={styles.title}>Nova denúncia</Text>
 
-          <View style={styles.inputGroup}>
+          <View style={[styles.inputRow, { borderTopWidth: 1, borderTopColor: '#AAAAAA' }]}>
             <Text style={styles.label}>
               Título
               <Text style={styles.asterisk}> *</Text>
@@ -148,39 +149,43 @@ export default function App() {
             />
           </View>
 
-          <View style={styles.inputGroup}>
+          <View style={[styles.inputRow, { paddingVertical: 5 }]}>
             <Text style={styles.label}>
               Tema
               <Text style={styles.asterisk}> *</Text>
             </Text>
-            <Picker
-              selectedValue={theme}
-              style={styles.picker}
-              onValueChange={(itemValue) => setTheme(itemValue)}
-            >
-              <Picker.Item label="Selecione um tema" value="" />
-              <Picker.Item label="Limpeza" value="LIMPEZA" />
-              <Picker.Item label="Meio Ambiente" value="MEIO AMBIENTE" />
-              <Picker.Item label="Infraestrutura" value="INFRAESTRUTURA" />
-              <Picker.Item label="Transporte" value="TRANSPORTE" />
-              <Picker.Item label="Mobilidade" value="MOBILIDADE" />
-              <Picker.Item label="Serviços" value="SERVIÇOS" />
-              <Picker.Item label="Água" value="ÁGUA" />
-              <Picker.Item label="Energia Elétrica" value="ENERGIA ELÉTRICA" />
-              <Picker.Item label="Saneamento Básico" value="SANEAMENTO BÁSICO" />
-              <Picker.Item label="Pertubação do Sossego" value="PERTUBAÇÃO DO SOSSEGO" />
-              <Picker.Item label="Segurança" value="SEGURANÇA" />
-              <Picker.Item label="Animais e Zoonoses" value="ANIMAIS E ZOONOSES" />
-            </Picker>
+            <View style={styles.pickerWrapper}>
+              <Picker
+                selectedValue={theme}
+                style={styles.input}
+                onValueChange={(itemValue) => setTheme(itemValue)}
+              >
+                <Picker.Item label="Selecione um tema" value="" />
+                <Picker.Item label="Limpeza" value="LIMPEZA" />
+                <Picker.Item label="Meio Ambiente" value="MEIO AMBIENTE" />
+                <Picker.Item label="Infraestrutura" value="INFRAESTRUTURA" />
+                <Picker.Item label="Transporte" value="TRANSPORTE" />
+                <Picker.Item label="Mobilidade" value="MOBILIDADE" />
+                <Picker.Item label="Serviços" value="SERVIÇOS" />
+                <Picker.Item label="Água" value="ÁGUA" />
+                <Picker.Item label="Energia Elétrica" value="ENERGIA ELÉTRICA" />
+                <Picker.Item label="Saneamento Básico" value="SANEAMENTO BÁSICO" />
+                <Picker.Item label="Pertubação do Sossego" value="PERTUBAÇÃO DO SOSSEGO" />
+                <Picker.Item label="Segurança" value="SEGURANÇA" />
+                <Picker.Item label="Animais e Zoonoses" value="ANIMAIS E ZOONOSES" />
+              </Picker>
+            </View>
           </View>
 
-          <View style={styles.inputGroup} >
+          <View style={styles.inputRow} >
             <Text style={styles.label}>Endereço<Text style={styles.asterisk}> *</Text></Text>
-            {address ? (
-              <Text style={styles.address} onPress={() => setShowAddressModal(true)}>{address}</Text>
-            ) : (
-              <Text style={styles.placeholder} onPress={() => setShowAddressModal(true)}>Nenhum endereço cadastrado. Clique aqui para adicionar</Text>
-            )}
+            <TouchableOpacity style={{ flex: 1 }} onPress={() => setShowAddressModal(true)}>
+              {address ? (
+                <Text style={[styles.input, styles.address]}>{address}</Text>
+              ) : (
+                <Text style={[styles.input, styles.placeholder]}>Clique aqui para adicionar</Text>
+              )}
+            </TouchableOpacity>
           </View>
           <AddressModal
             visible={showAddressModal}
@@ -191,35 +196,39 @@ export default function App() {
               setShowAddressModal(false);
             }} />
 
-          <View style={styles.inputGroup}>
+          <View style={[styles.inputRow]}>
             <Text style={styles.label}>
               Nome
               {!anonymous && <Text style={styles.asterisk}> *</Text>}
             </Text>
-            <View style={styles.rowView}>
-              <TextInput
-                style={[styles.input, anonymous && styles.inputDisabled]}
-                placeholder={anonymous ? "" : "Digite seu nome"}
-                placeholderTextColor="#AAAAAA"
-                maxLength={30}
-                value={name}
-                onChangeText={setName}
-                editable={!anonymous}
-                returnKeyType="done"
-                onSubmitEditing={() => Keyboard.dismiss()}
+            <TextInput
+              style={styles.input}
+              placeholder={anonymous ? "" : "Digite seu nome"}
+              placeholderTextColor="#AAAAAA"
+              maxLength={30}
+              value={name}
+              onChangeText={setName}
+              editable={!anonymous}
+            />
+            <View style={styles.switchContainer}>
+              <Switch
+                value={anonymous}
+                onValueChange={(value) => {
+                  setAnonymous(value);
+                  if (value) {
+                    setName('');
+                  }
+                }}
+                trackColor={{ false: '#AAAAAA', true: '#297E33' }}
               />
-              <View style={styles.switchContainer}>
-                <Switch value={anonymous} onValueChange={(value) => setAnonymous(value)} />
-                <Text style={styles.switchLabel}>Permanecer anônimo</Text>
-              </View>
+              <Text style={styles.switchLabel}>Permanecer anônimo</Text>
             </View>
           </View>
 
-          <View style={styles.textAreaGroup}>
-            <Text style={styles.counter}>{complaint.length}/500</Text>
+          <View style={styles.textAreaRow}>
             <TextInput
               style={styles.textArea}
-              placeholder="Descreva sua reclamação aqui..."
+              placeholder="Descreva sua reclamação/sugestão aqui..."
               placeholderTextColor="#AAAAAA"
               multiline
               maxLength={500}
@@ -228,10 +237,11 @@ export default function App() {
               returnKeyType="done"
               onSubmitEditing={() => Keyboard.dismiss()}
             />
+            <Text style={styles.counter}>{complaint.length}/500</Text>
           </View>
 
-          <TouchableOpacity style={{ backgroundColor: '#297E33', borderRadius: 10, padding: 10, justifyContent: "center", alignItems: "center" }} onPress={handlePublishAndNavigate} >
-            <Text style={{ fontSize: 15, color: "#FFFFFF" }}>Próxima etapa</Text>
+          <TouchableOpacity style={styles.submitButton} onPress={handlePublishAndNavigate} >
+            <Text style={styles.submitButtonText}>Próxima etapa</Text>
           </TouchableOpacity>
         </View>
       </ScrollView>
@@ -259,10 +269,6 @@ export default function App() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#FFFFFF',
-  },
   header: {
     backgroundColor: '#174791',
     paddingVertical: 20,
@@ -274,97 +280,88 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 31,
   },
-  publishBtn: {
-    backgroundColor: '#297E33',
-    paddingHorizontal: 22,
-    borderRadius: 5,
-  },
-  content: {
-    padding: 10,
+  cancelButtonHeaderText: {
+    color: 'white',
+    fontWeight: 'bold',
+    fontSize: 16,
   },
   title: {
-    fontSize: 24,
+    fontSize: 20,
     fontWeight: 'bold',
     color: '#000000',
     textAlign: 'center',
     marginBottom: 15,
   },
-  inputGroup: {
-    borderWidth: 1,
-    borderColor: 'gray',
-    borderStyle: 'solid',
-    borderRadius: 15,
-    padding: 14,
-    marginBottom: 10,
+  inputRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderBottomWidth: 1,
+    borderBottomColor: '#AAAAAA',
+    paddingVertical: 12,
   },
   label: {
     color: '#297E33',
     fontWeight: 'bold',
     fontSize: 16,
-    marginBottom: 8,
+    marginRight: 10,
+    minWidth: 90,
   },
   asterisk: {
     color: 'red',
     fontSize: 16,
   },
   input: {
-    backgroundColor: '#FFFFFF',
-    padding: 8,
+    flex: 1,
     fontSize: 16,
-    color: '#555555',
-    flex: 1
+    color: '#000000',
+    paddingVertical: 0,
+    paddingHorizontal: 0,
   },
-  picker: {
-    height: 50,
-    color: '#555555',
+  pickerWrapper: {
+    flex: 1,
   },
   switchContainer: {
-    marginTop: 10,
     alignItems: 'center',
+    marginLeft: 8,
   },
   switchLabel: {
-    fontSize: 10,
-    color: '#297E33',
-    marginTop: -5,
+    fontSize: 12,
+    color: '#555555',
+    marginTop: 2,
+    textAlign: 'center',
   },
-  textAreaGroup: {
-    borderWidth: 1,
-    borderColor: 'gray',
-    borderStyle: 'solid',
-    borderRadius: 15,
-    marginVertical: 10,
-    paddingHorizontal: 10,
+  textAreaRow: {
+    paddingVertical: 8,
+    borderBottomWidth: 1,
+    borderBottomColor: '#E0E0E0',
+    flex: 1,
   },
   counter: {
     textAlign: 'right',
-    fontSize: 16,
-    color: '#555555',
-    marginBottom: 6,
+    fontSize: 14,
+    color: '#888888',
+    paddingTop: 4,
+    fontWeight: 'bold',
   },
   textArea: {
-    height: 199,
+    flex: 1,
     textAlignVertical: 'top',
     backgroundColor: '#FFFFFF',
-    padding: 10,
+    padding: 0,
     fontSize: 16,
-    color: '#555555',
+    color: '#333333',
   },
   sectionContainer: {
     backgroundColor: '#FFFFFF',
     borderRadius: 20,
     padding: 16,
     marginTop: -15,
+    flex: 1, // <-- MUDANÇA 4 AQUI
   },
   scrollContainer: {
     flexGrow: 1,
     backgroundColor: '#FFFFFF',
     paddingBottom: 30,
-  },
-  addressText: {
-    fontSize: 18,
-    color: "#333",
-    marginBottom: 30,
-    textAlign: "center"
   },
   address: {
     fontSize: 18,
@@ -373,18 +370,6 @@ const styles = StyleSheet.create({
   placeholder: {
     fontSize: 16,
     color: "#AAAAAA"
-  },
-  inputDisabled: {
-    height: 30,
-    alignSelf: 'center',
-    backgroundColor: '#f0f0f0',
-    color: '#999',
-    opacity: 0.7,
-  },
-  rowView: {
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
-    marginTop: -5,
   },
   cancelMessageContainer: {
     position: 'absolute',
@@ -430,5 +415,20 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 16,
   },
-
+  submitButton: {
+    backgroundColor: '#297E33',
+    borderRadius: 10,
+    paddingHorizontal: 10,
+    paddingBottom: 10,
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 12,
+    borderTopWidth: 1,
+    borderTopColor: '#AAAAAA',
+    paddingTop: 12,
+  },
+  submitButtonText: {
+    fontSize: 15,
+    color: "#FFFFFF",
+  },
 });

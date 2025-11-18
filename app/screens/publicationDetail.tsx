@@ -104,7 +104,7 @@ export default function PublicationDetailScreen() {
             <View style={styles.content}>
                 <ScrollView contentContainerStyle={styles.scrollContent}>
                     <View style={styles.topContent}>
-                        <Text style={styles.publishedAt}>Publicado em: {formatDate(publicationDate)}</Text>
+                        <Text style={styles.publishedAt}>Enviado em: {formatDate(publicationDate)}</Text>
 
                         <Text style={styles.publicationTitle}>{publication.report.report}</Text>
 
@@ -206,7 +206,7 @@ const styles = StyleSheet.create({
         marginHorizontal: -16,
     },
     publicationTitle: {
-        fontSize: 20,
+        fontSize: 18,
         fontWeight: 'bold',
         color: '#297E33',
         marginBottom: 15,
@@ -214,7 +214,7 @@ const styles = StyleSheet.create({
     detailText: {
         fontSize: 16,
         color: '#333',
-        marginBottom: 8,
+        marginBottom: 12,
     },
     bold: {
         fontWeight: 'bold',
