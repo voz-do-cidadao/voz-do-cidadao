@@ -38,7 +38,7 @@ export default function App() {
 
         const showTutorialFlag = await AsyncStorage.getItem(SHOW_TUTORIAL);
         if (showTutorialFlag === "true") {
-          showCustomAlert("Preencha os campos realizar sua denúncia. Forneça o máximo de detalhes que puder.");
+          showCustomAlert("Preencha os campos para realizar a sua denúncia. Forneça o máximo de detalhes que puder.");
         }
       } catch (e) {
         console.error("Falha ao carregar dados iniciais ou tutorial", e);

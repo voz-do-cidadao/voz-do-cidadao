@@ -25,7 +25,7 @@ export default function PublicationDetailScreen() {
             return;
         }
         if (from === 'imageAdd') {
-            showCustomAlert("Sua denúncia foi enviada com sucesso!");
+            showCustomAlert("Sua denúncia foi enviada com sucesso! Fique de olho na sua caixa de emails para acompanhar o andamento.");
         }
 
         const fetchPublication = async () => {
