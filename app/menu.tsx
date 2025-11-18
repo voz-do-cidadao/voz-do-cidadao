@@ -1,6 +1,8 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useEffect } from 'react';
-import { Alert, Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Alert, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { EMAIL_USER_KEY, SHOW_TUTORIAL } from '../src/services/storage';
 
 export default function MenuScreen() {
     const router = useRouter();
@@ -13,8 +15,20 @@ export default function MenuScreen() {
         }
     }, [message, status]);
 
+    const handleLogout = async () => {
+        try {
+            await AsyncStorage.removeItem(EMAIL_USER_KEY);
+            await AsyncStorage.removeItem(SHOW_TUTORIAL);
+            router.replace('/');
+
+        } catch (e) {
+            console.error("Não foi possível limpar os dados de sessão", e);
+            router.replace('/');
+        }
+    };
+
     return (
-        <ScrollView style={styles.mainContainer} contentContainerStyle={{ flexGrow: 1 }}>
+        <View style={styles.appContainer}>
             <View style={styles.header}>
                 <Image
                     source={require('../assets/images/logo_b.png')}
@@ -22,55 +36,70 @@ export default function MenuScreen() {
                     resizeMode="contain"
                 />
             </View>
-
-            <View style={styles.content}>
-                <TouchableOpacity style={styles.newPostButton} onPress={() => router.push('/screens/publish')}>
-                    <Text style={styles.newPostButtonText}>Fazer uma nova denúncia</Text>
-                    <View style={styles.plusIconContainer}>
-                        <Text style={styles.plusIcon}>+</Text>
-                    </View>
-                </TouchableOpacity>
-
-                <View style={styles.gridContainer}>
-                    <View style={styles.gridRow}>
-                        <TouchableOpacity style={[styles.card, { marginRight: 8 }]} onPress={() => router.push('/screens/services')}>
-                            <Image
-                                source={require('../assets/images/infraestrutura.png')}
-                                style={styles.cardImage}
-                            />
-                        </TouchableOpacity>
-                        <TouchableOpacity style={[styles.card, { marginLeft: 8 }]} onPress={() => router.push('/screens/chatbot')}>
-                            <Image
-                                source={require('../assets/images/assistente.png')}
-                                style={styles.cardImage}
-                            />
-                        </TouchableOpacity>
-                    </View>
-
-                    <View style={[styles.gridRow, { marginBottom: 0 }]}>
-                        <TouchableOpacity style={[styles.card, { marginRight: 8 }]} onPress={() => router.push('/screens/myPublications')}>
-                            <Image
-                                source={require('../assets/images/pub.png')}
-                                style={styles.cardImage}
-                            />
-                        </TouchableOpacity>
-                        <TouchableOpacity style={[styles.card, { marginLeft: 8 }]} onPress={() => router.push('/screens/manual')}>
-                            <Image
-                                source={require('../assets/images/manual.jpg')}
-                                style={styles.cardImage}
-                            />
+            <View style={styles.contentWrapper}>
+                <View style={styles.content}>
+                    <TouchableOpacity style={styles.newPostButton} onPress={() => router.push('/screens/publish')}>
+                        <Text style={styles.newPostButtonText}>Fazer uma nova denúncia</Text>
+                        <View style={styles.plusIconContainer}>
+                            <Text style={styles.plusIcon}>+</Text>
+                        </View>
+                    </TouchableOpacity>
+                    <View style={styles.gridContainer}>
+                        <View style={styles.gridRow}>
+                            <TouchableOpacity style={[styles.card, { marginRight: 8 }]} onPress={() => router.push('/screens/services')}>
+                                <Image
+                                    source={require('../assets/images/infraestrutura.png')}
+                                    style={styles.cardImage}
+                                />
+                            </TouchableOpacity>
+                            <TouchableOpacity style={[styles.card, { marginLeft: 8 }]} onPress={() => router.push('/screens/chatbot')}>
+                                <Image
+                                    source={require('../assets/images/assistente.png')}
+                                    style={styles.cardImage}
+                                />
+                            </TouchableOpacity>
+                        </View>
+                        <View style={[styles.gridRow, { marginBottom: 0 }]}>
+                            <TouchableOpacity style={[styles.card, { marginRight: 8 }]} onPress={() => router.push('/screens/myPublications')}>
+                                <Image
+                                    source={require('../assets/images/pub.png')}
+                                    style={styles.cardImage}
+                                />
+                            </TouchableOpacity>
+                            <TouchableOpacity style={[styles.card, { marginLeft: 8 }]} onPress={() => router.push('/screens/manual')}>
+                                <Image
+                                    source={require('../assets/images/manual.jpg')}
+                                    style={styles.cardImage}
+                                />
+                            </TouchableOpacity>
+                        </View>
+                        <View style={styles.divider} />
+                        <TouchableOpacity
+                            style={styles.logoutButton}
+                            onPress={handleLogout}
+                        >
+                            <Text style={styles.logoutButtonText}>Sair do aplicativo</Text>
                         </TouchableOpacity>
                     </View>
                 </View>
             </View>
-        </ScrollView>
+        </View>
     );
 }
 
 const styles = StyleSheet.create({
-    mainContainer: {
+    appContainer: {
         flex: 1,
         backgroundColor: '#174791',
+    },
+    contentWrapper: {
+        flex: 1,
+        backgroundColor: '#FFFFFF',
+        borderTopLeftRadius: 20,
+        borderTopRightRadius: 20,
+    },
+    content: {
+        paddingTop: 24,
     },
     header: {
         backgroundColor: '#174791',
@@ -82,14 +111,6 @@ const styles = StyleSheet.create({
     logo: {
         width: 230,
         height: 73,
-    },
-    content: {
-        flex: 1,
-        backgroundColor: '#FFFFFF',
-        borderTopLeftRadius: 20,
-        borderTopRightRadius: 20,
-        paddingTop: 24,
-        paddingBottom: 24,
     },
     newPostButton: {
         flexDirection: 'row',
@@ -123,6 +144,7 @@ const styles = StyleSheet.create({
     },
     gridContainer: {
         paddingHorizontal: 16,
+        paddingBottom: 20,
     },
     gridRow: {
         flexDirection: 'row',
@@ -139,5 +161,25 @@ const styles = StyleSheet.create({
         width: '100%',
         height: '100%',
         borderRadius: 10,
+    },
+    divider: {
+        height: 1,
+        backgroundColor: '#ccc',
+        marginTop: 10,
+        marginBottom: 15,
+    },
+    logoutButton: {
+        backgroundColor: '#FFFFFF',
+        borderColor: '#174791',
+        borderWidth: 1,
+        borderRadius: 8,
+        paddingVertical: 12,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    logoutButtonText: {
+        color: '#174791',
+        fontSize: 16,
+        fontWeight: 'bold',
     },
 });
