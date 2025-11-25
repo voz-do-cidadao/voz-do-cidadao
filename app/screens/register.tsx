@@ -61,13 +61,15 @@ export default function RegisterScreen() {
     };
 
     const handleRegister = async () => {
-        if (!email.trim() || !password.trim() || !confirmPassword.trim()) {
+        const trimmedEmail = email.trim();
+
+        if (!trimmedEmail || !password.trim() || !confirmPassword.trim()) {
             showCustomAlert("Por favor, preencha todos os campos.");
             return;
         }
 
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(email)) {
+        if (!emailRegex.test(trimmedEmail)) {
             showCustomAlert("Por favor, insira um endereço de email válido.");
             return;
         }
@@ -78,7 +80,7 @@ export default function RegisterScreen() {
         }
 
         try {
-            await AsyncStorage.setItem(EMAIL_USER_KEY, email);
+            await AsyncStorage.setItem(EMAIL_USER_KEY, trimmedEmail);
             await AsyncStorage.setItem(SHOW_TUTORIAL, 'true');
         } catch (e) {
             console.error("Não foi possível salvar o email.");

@@ -77,7 +77,7 @@ export default function MyPublicationscreen() {
             </View>
             <ScrollView style={styles.scrollArea} contentContainerStyle={styles.scrollContent}>
                 <View style={styles.logoContainer}>
-                    <Text style={styles.headerTitle}>Minhas publicações</Text>
+                    <Text style={styles.headerTitle}>Minhas denúncias</Text>
                 </View>
                 {publications.length > 0 ? (
                     publications.map((publication) => (
@@ -98,7 +98,7 @@ export default function MyPublicationscreen() {
                         </TouchableOpacity>
                     ))
                 ) : (
-                    <Text style={styles.noPublicationsText}>Você ainda não fez nenhuma publicação.</Text>
+                    <Text style={styles.noPublicationsText}>Você ainda não fez nenhuma denúncia.</Text>
                 )}
             </ScrollView>
         </View>

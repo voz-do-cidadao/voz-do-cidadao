@@ -55,3 +55,7 @@ export const getReportsByEmail = async (email: string): Promise<ReportDetail[]> 
     const response = await api.get(`/voz-do-povo/${email}/reports`);
     return response.data;
 };
+
+export const sendEmail = async (reportId: string): Promise<void> => {
+    await api.post(`/voz-do-povo/${reportId}`);
+}
