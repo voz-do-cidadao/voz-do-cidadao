@@ -1,7 +1,8 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useEffect } from 'react';
-import { Alert, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Alert, Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { EMAIL_USER_KEY, SHOW_TUTORIAL } from '../src/services/storage';
 
 export default function MenuScreen() {
@@ -28,7 +29,7 @@ export default function MenuScreen() {
     };
 
     return (
-        <View style={styles.appContainer}>
+        <SafeAreaView style={styles.appContainer}>
             <View style={styles.header}>
                 <Image
                     source={require('../assets/images/logo_b.png')}
@@ -37,7 +38,7 @@ export default function MenuScreen() {
                 />
             </View>
             <View style={styles.contentWrapper}>
-                <View style={styles.content}>
+                <ScrollView style={styles.content} contentContainerStyle={styles.scrollContent}>
                     <TouchableOpacity style={styles.newPostButton} onPress={() => router.push('/screens/publish')}>
                         <Text style={styles.newPostButtonText}>Fazer uma nova denúncia</Text>
                         <View style={styles.plusIconContainer}>
@@ -62,7 +63,7 @@ export default function MenuScreen() {
                         <View style={[styles.gridRow, { marginBottom: 0 }]}>
                             <TouchableOpacity style={[styles.card, { marginRight: 8 }]} onPress={() => router.push('/screens/myPublications')}>
                                 <Image
-                                    source={require('../assets/images/pub.png')}
+                                    source={require('../assets/images/minhas_denuncias.jpg')}
                                     style={styles.cardImage}
                                 />
                             </TouchableOpacity>
@@ -81,9 +82,9 @@ export default function MenuScreen() {
                             <Text style={styles.logoutButtonText}>Sair do aplicativo</Text>
                         </TouchableOpacity>
                     </View>
-                </View>
+                </ScrollView>
             </View>
-        </View>
+        </SafeAreaView>
     );
 }
 
@@ -99,6 +100,9 @@ const styles = StyleSheet.create({
         borderTopRightRadius: 20,
     },
     content: {
+        flex: 1,
+    },
+    scrollContent: {
         paddingTop: 24,
     },
     header: {

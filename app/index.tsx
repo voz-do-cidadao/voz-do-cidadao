@@ -60,19 +60,21 @@ export default function LoginScreen() {
   };
 
   const handleGoToMenu = async () => {
-    if (!email.trim() || !password.trim()) {
+    const trimmedEmail = email.trim();
+
+    if (!trimmedEmail || !password.trim()) {
       showCustomAlert("Por favor, insira o email e a senha.");
       return;
     }
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
+    if (!emailRegex.test(trimmedEmail)) {
       showCustomAlert("Por favor, insira um endereço de email válido.");
       return;
     }
 
     try {
-      await AsyncStorage.setItem(EMAIL_USER_KEY, email);
+      await AsyncStorage.setItem(EMAIL_USER_KEY, trimmedEmail);
       await AsyncStorage.setItem(SHOW_TUTORIAL, 'false');
     } catch (e) {
       console.error("Erro", "Não foi possível salvar o email.");
@@ -94,7 +96,7 @@ export default function LoginScreen() {
           resizeMode="contain"
         />
 
-        <Animated.View style={{ marginBottom: keyboardOffset, alignItems: "center", width:'85%' }}>
+        <Animated.View style={{ marginBottom: keyboardOffset, alignItems: "center", width: '85%' }}>
           <TextInput
             style={styles.input}
             placeholder="Email"

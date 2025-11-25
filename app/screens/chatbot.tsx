@@ -1,13 +1,11 @@
 import { useRouter } from 'expo-router';
-import { Linking } from "react-native";
 import React, { useEffect, useRef, useState } from "react";
 import {
   Animated,
   FlatList,
   Image,
   Keyboard,
-  KeyboardEvent,
-  Platform,
+  KeyboardEvent, Linking, Platform,
   StyleSheet,
   Text,
   TextInput,
@@ -149,7 +147,7 @@ export default function App() {
     }
 
     if (flowStep === "final") {
-      botReply("Atendimento finalizado. Caso queira começar novamente, digite qualquer coisa.");
+      botReply("Atendimento finalizado. Caso queira começar novamente, digite alguma opção válida.");
       setFlowStep("menu");
       return;
     }
@@ -165,36 +163,36 @@ export default function App() {
   };
 
   const renderMessage = ({ item }: { item: Message }) => {
-  const urlRegex = /(https?:\/\/[^\s]+)/g;
+    const urlRegex = /(https?:\/\/[^\s]+)/g;
 
-  const parts = item.text.split(urlRegex);
+    const parts = item.text.split(urlRegex);
 
-  return (
-    <View
-      style={[
-        styles.messageContainer,
-        item.sender === "user" ? styles.userMessage : styles.botMessage,
-      ]}
-    >
-      <Text style={styles.messageText}>
-        {parts.map((part, index) => {
-          if (urlRegex.test(part)) {
-            return (
-              <Text
-                key={index}
-                style={{ color: "#add8ff", textDecorationLine: "underline" }}
-                onPress={() => Linking.openURL(part)}
-              >
-                {part}
-              </Text>
-            );
-          }
-          return part;
-        })}
-      </Text>
-    </View>
-  );
-};
+    return (
+      <View
+        style={[
+          styles.messageContainer,
+          item.sender === "user" ? styles.userMessage : styles.botMessage,
+        ]}
+      >
+        <Text style={styles.messageText}>
+          {parts.map((part, index) => {
+            if (urlRegex.test(part)) {
+              return (
+                <Text
+                  key={index}
+                  style={{ color: "#add8ff", textDecorationLine: "underline" }}
+                  onPress={() => Linking.openURL(part)}
+                >
+                  {part}
+                </Text>
+              );
+            }
+            return part;
+          })}
+        </Text>
+      </View>
+    );
+  };
 
   useEffect(() => {
     flatListRef.current?.scrollToEnd({ animated: true });

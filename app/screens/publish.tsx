@@ -102,7 +102,6 @@ export default function App() {
 
     try {
       const responseData = await publishReport(body);
-      limparCampos();
       router.replace({ pathname: '/screens/imageAdd', params: { reportId: responseData.id } });
     } catch (error) {
       console.error("Erro ao publicar:", error);
@@ -163,6 +162,7 @@ export default function App() {
                 <Picker.Item label="Selecione um tema" value="" />
                 <Picker.Item label="Limpeza" value="LIMPEZA" />
                 <Picker.Item label="Meio Ambiente" value="MEIO AMBIENTE" />
+                <Picker.Item label="Saúde" value="SAÚDE" />
                 <Picker.Item label="Infraestrutura" value="INFRAESTRUTURA" />
                 <Picker.Item label="Transporte" value="TRANSPORTE" />
                 <Picker.Item label="Mobilidade" value="MOBILIDADE" />
@@ -356,12 +356,12 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     padding: 16,
     marginTop: -15,
-    flex: 1, // <-- MUDANÇA 4 AQUI
+    flex: 1,
   },
   scrollContainer: {
     flexGrow: 1,
     backgroundColor: '#FFFFFF',
-    paddingBottom: 30,
+    paddingBottom: 70
   },
   address: {
     fontSize: 18,

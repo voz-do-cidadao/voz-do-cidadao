@@ -1,9 +1,11 @@
+import { sendEmail } from '@/services/reportService';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import CustomAlertModal from 'components/CustomAlertModal';
 import * as ImagePicker from 'expo-image-picker';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import React, { useEffect, useState } from 'react';
-import { ActivityIndicator, Alert, Image, Modal, ScrollView, StatusBar, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import React, { useEffect, useState } from "react";
+import { ActivityIndicator, Alert, Image, Modal, ScrollView, StatusBar, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { uploadReportImage } from '../../src/services/reportImageService';
 import { SHOW_TUTORIAL } from '../../src/services/storage';
 
@@ -205,6 +207,7 @@ export default function App() {
           await uploadReportImage(reportId, imageUri);
         }
       }
+      await sendEmail(reportId);
       router.replace({ pathname: "/screens/publicationDetail", params: { reportId, from: 'imageAdd' } });
     } catch (error) {
       Alert.alert("Erro no Upload", "Ocorreu um erro ao enviar as imagens. Por favor, tente novamente.");
@@ -299,7 +302,7 @@ export default function App() {
 
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <View style={styles.header}>
         <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
           <Text style={styles.backText}>←</Text>
@@ -368,7 +371,7 @@ export default function App() {
         onSelectGallery={handleSelectGallery}
         onSelectCamera={handleOpenCamera}
       />
-    </View>
+    </SafeAreaView>
   );
 }
 const styles = StyleSheet.create({
@@ -480,7 +483,6 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   publishButtonWrapper: {
-    position: 'absolute',
     bottom: 0,
     left: 0,
     right: 0,
@@ -488,7 +490,6 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     borderTopWidth: 1,
     borderTopColor: '#eee',
-    zIndex: 10,
   },
   publishButton: {
     backgroundColor: '#297E33',
